@@ -1,28 +1,40 @@
 import "./index.css"
-//import styles from "./index.module.css"
 import logo from "./test.png"
 import React from "react"
 import ReactDom from "react-dom"
 
-console.log(logo)
-const messages = ["Hello"]
+class NameForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {value: ''};
 
-const Messages = () => {
-  return (
-    <div>
-      <h1>messages</h1>
-      {messages.map((message) => (
-        <p key={messages}>{message}</p>
-      ))}
-      <input placeholder="Введите сообщение" />
-      <button>Отправить</button>
-    </div>
-  )
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleChange(event) {
+        this.setState({value: event.target.value});
+    }
+
+    handleSubmit(event) {
+        alert('A name was submitted: ' + this.state.value);
+        event.preventDefault();
+    }
+
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <label>
+                    Name:
+                    <input type="text" value={this.state.value} onChange={this.handleChange} />
+                </label>
+                <input type="submit" value="Submit" />
+            </form>
+        );
+    }
 }
 
 ReactDom.render(
-  <>
-    <Messages title="title" />
-  </>,
-  document.querySelector("#root"),
-)
+    <NameForm />,
+    document.getElementById('root')
+);
