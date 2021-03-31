@@ -1,9 +1,9 @@
 import "./index.css"
 import React from "react"
 import ReactDom from "react-dom"
-import App from './components/MessageField.js';
+import { MessageField } from './components/MessageField.js';
 
 ReactDom.render(
-    <App />,
+    <MessageField />,
     document.getElementById('root')
 );

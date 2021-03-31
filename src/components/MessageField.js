@@ -1,7 +1,7 @@
 import React from 'react';
-import Message from './Message';
+import { Message } from './Message';
 
-export default class MessageField extends React.Component {
+export class MessageField extends React.Component {
     state = {
         messages: [
             { author: "User", value: "Привет!" },
