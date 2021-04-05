@@ -1,7 +1,7 @@
 import { Input, withStyles, InputAdornment } from "@material-ui/core"
 import { Send } from "@material-ui/icons"
-import React from "react";
-import { Message } from "./message";
+import React, { Component, createRef } from "react"
+import { Message } from "./message"
 import styles from "./message-list.module.css"
 
 const StyledInput = withStyles(() => {
@@ -16,17 +16,15 @@ const StyledInput = withStyles(() => {
     }
 })(Input)
 
-const StyledMessage = withStyles(() => {
-    return
-})
-
-export class MessageList extends React.Component {
+export class MessageList extends Component {
     state = {
         messages: [
             { author: "User", value: "Привет!" },
             { author: "bot", value: "Я робот!" }
             ]
     };
+
+    ref = createRef()
 
     sendMessage = ({ author, value }) => {
         const { messages } = this.state
@@ -49,6 +47,12 @@ export class MessageList extends React.Component {
         }
     }
 
+    handleScrollBottom = () => {
+        if (this.ref.current) {
+            this.ref.current.scrollTo(0, this.ref.current.scrollHeight)
+        }
+    }
+
     componentDidUpdate(_, state) {
         const { messages } = this.state
 
@@ -59,35 +63,39 @@ export class MessageList extends React.Component {
                 this.sendMessage({ author: "bot", value: "Как дела ?" })
             }, 500)
         }
+        this.handleScrollBottom();
     }
-
-
 
     render() {
         const { messages, value } = this.state
-        return <div className="message-field">
-            <StyledInput
-                fullWidth={true}
-                value={value}
-                onChange={this.handleChangeInput}
-                onKeyPress={this.handlePressInput}
-                placeholder="Введите сообщение..."
-                endAdornment={
-                    <InputAdornment position="end">
-                        {value && (
-                            <Send
-                                className={styles.icon}
-                                onClick={() => {
-                                    this.sendMessage({ author: "User", value })
-                                }}
-                            />
-                        )}
-                    </InputAdornment>
-                }
-            />
-            {messages.map((message, index) => (
-                <Message message={message} key={index} />
-            ))}
-        </div>
+        return (
+            <>
+                <div ref={this.ref}>
+                    {messages.map((message, index) => (
+                        <Message message={message} key={index} />
+                    ))}
+                </div>
+
+                <StyledInput
+                    fullWidth={true}
+                    value={value}
+                    onChange={this.handleChangeInput}
+                    onKeyPress={this.handlePressInput}
+                    placeholder="Введите сообщение..."
+                    endAdornment={
+                        <InputAdornment position="end">
+                            {value && (
+                                <Send
+                                    className={styles.icon}
+                                    onClick={() => {
+                                        this.sendMessage({ author: "User", value })
+                                    }}
+                                />
+                            )}
+                        </InputAdornment>
+                    }
+                />
+            </>
+        )
     }
 }
