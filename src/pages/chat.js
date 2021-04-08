@@ -1,7 +1,7 @@
-import  { ChatList, Header, Layout, MessageList } from "../components"
+import { ChatList, Header, Layout, MessageList } from "@components"
 import React, { Component } from "react"
 import { Switch, Route } from "react-router-dom"
-import { MessageProvider } from "../components"
+import { MessagesNotFound } from "../components"
 
 export class ChatPage extends Component {
   componentDidMount() {
@@ -21,35 +21,27 @@ export class ChatPage extends Component {
 
   render() {
     return (
-      <Switch>
-        <Route path={["/chat/:id", "/chat"]}>
-          {(params) => {
-            return (
-              <MessageProvider {...params}>
-                {([state, actions]) => (
-                  <Layout
-                    header={<Header />}
-                    chats={
-                      <ChatList
-                        {...params}
-                        conversations={state.conversations}
-                      />
-                    }
-                  >
+        <Switch>
+          <Route path={["/chat/:id", "/chat"]}>
+            {(params) => (
+                <>
+                  <Layout header={<Header />} chats={<ChatList {...params} />}>
                     <Route path="/chat/:id">
-                      <MessageList {...state} {...actions} />
+                      <MessageList {...params} />
                     </Route>
                     <Route exact={true} path="/chat">
-                      <h1>Выберите чат</h1>
+                      <MessagesNotFound />
                     </Route>
                   </Layout>
-                )}
-              </MessageProvider>
-            )
-          }}
-        </Route>
-        <Route path="*" component={() => <h1>такого чата нет</h1>} />
-      </Switch>
+                </>
+            )}
+          </Route>
+          <Route
+              exact={true}
+              path="*"
+              component={() => <h1>такого чата нет (404)</h1>}
+          />
+        </Switch>
     )
   }
 }

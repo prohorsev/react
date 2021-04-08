@@ -1,8 +1,11 @@
 import { Input, withStyles, InputAdornment } from "@material-ui/core"
 import { Send } from "@material-ui/icons"
 import React, { Component, createRef } from "react"
+import { connect } from "react-redux"
+import { sendMessage } from "../../store"
 import { Message } from "./message"
 import styles from "./message-list.module.css"
+import { MessagesNotFound } from "./messages-not-found"
 
 const StyledInput = withStyles(() => {
     return {
@@ -16,7 +19,7 @@ const StyledInput = withStyles(() => {
     }
 })(Input)
 
-export class MessageList extends Component {
+export class MessageListView extends Component {
     ref = createRef()
 
     handlePressInput = ({ code }) => {
@@ -26,9 +29,10 @@ export class MessageList extends Component {
     }
 
     handleSendMessage = () => {
-        const { sendMessage, value } = this.props
+        const { sendMessage, value, match } = this.props
+        const { id } = match.params
 
-        sendMessage({ author: "User", message: value })
+        sendMessage({ author: "User", message: value, roomId: id })
     }
 
     handleScrollBottom = () => {
@@ -47,9 +51,13 @@ export class MessageList extends Component {
         return (
             <>
                 <div ref={this.ref}>
-                    {messages.map((message, index) => (
-                        <Message message={message} key={index} />
-                    ))}
+                    {!messages.length ? (
+                        <MessagesNotFound />
+                    ) : (
+                        messages.map((message, index) => (
+                            <Message message={message} key={index} />
+                        ))
+                    )}
                 </div>
 
                 <StyledInput
@@ -73,3 +81,20 @@ export class MessageList extends Component {
         )
     }
 }
+
+const mapStateToProps = (state, props) => {
+    const { id } = props.match.params
+
+    return {
+        messages: state.messagesReducer[id] || [],
+    }
+}
+
+const mapDispachToProps = (dispatch) => ({
+    sendMessage: (params) => dispatch(sendMessage(params)),
+})
+
+export const MessageList = connect(
+    mapStateToProps,
+    mapDispachToProps,
+)(MessageListView)
