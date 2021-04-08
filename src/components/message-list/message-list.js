@@ -17,34 +17,18 @@ const StyledInput = withStyles(() => {
 })(Input)
 
 export class MessageList extends Component {
-    state = {
-        messages: [
-            { author: "User", value: "Привет!" },
-            { author: "bot", value: "Я робот!" }
-            ]
-    };
-
     ref = createRef()
-
-    sendMessage = ({ author, value }) => {
-        const { messages } = this.state
-
-        this.setState({
-            messages: [...messages, { author, value }],
-            value: "",
-        })
-    }
-
-    handleChangeInput = ({ target }) => {
-        this.setState({
-            value: target.value,
-        })
-    }
 
     handlePressInput = ({ code }) => {
         if (code === "Enter") {
-            this.sendMessage({ author: "User", value: this.state.value })
+            this.handleSendMessage()
         }
+    }
+
+    handleSendMessage = () => {
+        const { sendMessage, value } = this.props
+
+        sendMessage({ author: "User", message: value })
     }
 
     handleScrollBottom = () => {
@@ -53,21 +37,13 @@ export class MessageList extends Component {
         }
     }
 
-    componentDidUpdate(_, state) {
-        const { messages } = this.state
-
-        const lastMessage = messages[messages.length - 1]
-
-        if (lastMessage.author === "User" && state.messages !== messages) {
-            setTimeout(() => {
-                this.sendMessage({ author: "bot", value: "Как дела ?" })
-            }, 500)
-        }
-        this.handleScrollBottom();
+    componentDidUpdate() {
+        this.handleScrollBottom()
     }
 
     render() {
-        const { messages, value } = this.state
+        const { value, messages } = this.props
+
         return (
             <>
                 <div ref={this.ref}>
@@ -79,7 +55,7 @@ export class MessageList extends Component {
                 <StyledInput
                     fullWidth={true}
                     value={value}
-                    onChange={this.handleChangeInput}
+                    onChange={(e) => this.props.handleChangeValue(e.target.value)}
                     onKeyPress={this.handlePressInput}
                     placeholder="Введите сообщение..."
                     endAdornment={
@@ -87,9 +63,7 @@ export class MessageList extends Component {
                             {value && (
                                 <Send
                                     className={styles.icon}
-                                    onClick={() => {
-                                        this.sendMessage({ author: "User", value })
-                                    }}
+                                    onClick={this.handleSendMessage}
                                 />
                             )}
                         </InputAdornment>
