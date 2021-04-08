@@ -25,26 +25,21 @@ export class Chat extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     selected: PropTypes.bool.isRequired,
-    handleListItemClick: PropTypes.func.isRequired,
   }
 
   render() {
-    const { handleListItemClick, selected, title } = this.props
+    const { selected, title } = this.props
 
     return (
-      <StyledListItem
-        button={true}
-        selected={selected}
-        onClick={handleListItemClick}
-      >
-        <ListItemIcon>
-          <AccountCircle fontSize="large" className={styles.icon} />
-        </ListItemIcon>
-        <div className={styles.description}>
-          <ListItemText className={styles.text} primary={title} />
-          <ListItemText className={styles.text} primary="12.30" />
-        </div>
-      </StyledListItem>
+        <StyledListItem button={true} selected={selected}>
+          <ListItemIcon>
+            <AccountCircle fontSize="large" className={styles.icon} />
+          </ListItemIcon>
+          <div className={styles.description}>
+            <ListItemText className={styles.text} primary={title} />
+            <ListItemText className={styles.text} primary="12.30" />
+          </div>
+        </StyledListItem>
     )
   }
 }
