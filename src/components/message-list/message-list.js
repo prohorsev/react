@@ -2,7 +2,7 @@ import { Input, withStyles, InputAdornment } from "@material-ui/core"
 import { Send } from "@material-ui/icons"
 import React, { Component, createRef } from "react"
 import { connect } from "react-redux"
-import { sendMessage, changeValue } from "../../store"
+import { sendMessage, changeValue, getMessagesById } from "../../store"
 import { Message } from "./message"
 import styles from "./message-list.module.css"
 import { MessagesNotFound } from "./messages-not-found"
@@ -50,8 +50,26 @@ export class MessageListView extends Component {
         }
     }
 
-    componentDidUpdate() {
+    getMessages = () => {
+        const { match, getMessagesById } = this.props
+        const { id } = match.params
+
+        getMessagesById(id)
+    }
+
+    componentDidUpdate(prevProps) {
+        const prevId = prevProps.match.params.id
+        const id = this.props.match.params.id
+
+        if (prevId !== id) {
+            this.getMessages()
+        }
+
         this.handleScrollBottom()
+    }
+
+    componentDidMount() {
+        this.getMessages()
     }
 
     render() {
@@ -95,9 +113,9 @@ const mapStateToProps = (state, props) => {
     const { id } = props.match.params
 
     return {
-        messages: state.messagesReducer[id] || [],
+        messages: state.messagesReducer.messages[id] || [],
         value:
-            state.conversationsReducer.find(
+            state.conversationsReducer.conversations.find(
                 (conversation) => conversation.title === id,
             )?.value || "",
     }
@@ -106,6 +124,7 @@ const mapStateToProps = (state, props) => {
 const mapDispachToProps = (dispatch) => ({
     sendMessage: (params) => dispatch(sendMessage(params)),
     changeValue: (id, value) => dispatch(changeValue(id, value)),
+    getMessagesById: (id) => dispatch(getMessagesById(id)),
 })
 
 export const MessageList = connect(
