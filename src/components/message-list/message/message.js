@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import classNames from "classnames"
+import React, { Component } from "react"
 
-export class Message extends React.Component {
+export class Message extends Component {
     render() {
         const {
-            message: { message, author, createdTs },
+            message: { message, author },
         } = this.props
 
         return (
@@ -15,7 +15,7 @@ export class Message extends React.Component {
             >
                 <p>{author}</p>
                 <h3>{message}</h3>
-                <p>{format(createdTs, "HH:mm:ss")}</p>
+                {}
             </div>
         )
     }
