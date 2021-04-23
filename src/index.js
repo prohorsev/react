@@ -3,11 +3,12 @@ import { ConnectedRouter } from "connected-react-router"
 import React from "react"
 import ReactDOM from "react-dom"
 import { Provider } from "react-redux"
-import { Switch, Route } from "react-router-dom"
+import { Switch, Route, Redirect } from "react-router-dom"
 import { PersistGate } from "redux-persist/integration/react"
 import { ChatPage } from "./pages"
 import { store, persistor, history } from "./store"
 import "./index.css"
+
 const dark = {
     color: "red",
 }
@@ -24,7 +25,7 @@ ReactDOM.render(
                             path="/chat"
                             component={(params) => <ChatPage {...params} />}
                         />
-                        <Route path="*" component={() => <h1>404</h1>} />
+                        <Route path="*" component={() => <Redirect to="/chat" />} />
                     </Switch>
                 </ThemeProvider>
             </PersistGate>
